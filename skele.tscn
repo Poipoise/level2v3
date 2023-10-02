@@ -1,0 +1,190 @@
+[gd_scene load_steps=13 format=3 uid="uid://l1f08gkcla0r"]
+
+[ext_resource type="Texture2D" uid="uid://dsqucpsyx1nd1" path="res://mystic_woods/mystic_woods/sprites/characters/skeleton.png" id="1_5ed62"]
+[ext_resource type="Script" path="res://skele.gd" id="1_fh6v1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d7fy5"]
+size = Vector2(9, 5)
+
+[sub_resource type="Animation" id="Animation_xwwnx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skelehurtbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_odtre"]
+resource_name = "attack"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [12, 13, 14, 16]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Skelehurtbox/CollisionShape2D:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
+}
+
+[sub_resource type="Animation" id="Animation_whq6a"]
+resource_name = "death"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [24, 28]
+}
+
+[sub_resource type="Animation" id="Animation_1yubx"]
+resource_name = "idle"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0, 5]
+}
+
+[sub_resource type="Animation" id="Animation_2j8si"]
+resource_name = "run"
+length = 0.8
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.8),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [6, 11]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_a2vqm"]
+_data = {
+"RESET": SubResource("Animation_xwwnx"),
+"attack": SubResource("Animation_odtre"),
+"death": SubResource("Animation_whq6a"),
+"idle": SubResource("Animation_1yubx"),
+"run": SubResource("Animation_2j8si")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0u8l3"]
+radius = 11.0
+height = 28.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3g66o"]
+radius = 105.005
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7y64c"]
+radius = 25.0799
+
+[node name="Skele" type="CharacterBody2D" groups=["minimap_objects"]]
+collision_layer = 8
+collision_mask = 15
+motion_mode = 1
+script = ExtResource("1_fh6v1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -21)
+texture = ExtResource("1_5ed62")
+hframes = 6
+vframes = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -1.5)
+shape = SubResource("RectangleShape2D_d7fy5")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_a2vqm")
+}
+
+[node name="Skelehurtbox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Skelehurtbox"]
+position = Vector2(14, -10)
+shape = SubResource("CapsuleShape2D_0u8l3")
+disabled = true
+
+[node name="Label" type="Label" parent="."]
+offset_left = -10.0
+offset_top = -38.0
+offset_right = 30.0
+offset_bottom = -12.0
+text = "IDLE"
+
+[node name="Detect" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detect"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_3g66o")
+
+[node name="Attack" type="Area2D" parent="."]
+visible = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Attack"]
+position = Vector2(0, -6)
+shape = SubResource("CircleShape2D_7y64c")
+
+[connection signal="body_entered" from="Skelehurtbox" to="." method="_on_skelehurtbox_body_entered"]
+[connection signal="body_entered" from="Detect" to="." method="_on_detect_body_entered"]
+[connection signal="body_exited" from="Detect" to="." method="_on_detect_body_exited"]
+[connection signal="body_entered" from="Attack" to="." method="_on_attack_body_entered"]
+[connection signal="body_exited" from="Attack" to="." method="_on_attack_body_exited"]
